@@ -1,31 +1,36 @@
 from tkinter import *
+import csv
+from tkinter.filedialog import asksaveasfile
 
-def saveInfo():
-    
-        
+def save_file():
+   file = asksaveasfile(initialfile = 'score_sheet.csv',
+defaultextension=".csv",filetypes=[("All Files","*.*"),("Text Documents","*.txt")])
+
+def writeHeader():
+    with open("C:\\Users\\Mosope\\Desktop\\Projects\\FORM\\score_sheet.csv","w",newline="\n") as File:
+        writer = csv.writer(File)
+        writer.writerow(["Firstname", "Lastname", "Matric Number", "Score"])
+    File.close()
+
+def appendInfo():
+            
     first_name_info = firstname.get()
     last_name_info = lastname.get()
     matric_number_info = matric_number.get()
     score_info = score.get()
     print(f"Firstname: {first_name_info} \nLastname: {last_name_info} \nMatric Number: {matric_number_info} \nScore: {score_info} \n ")
-    
-    file = open("score_sheet.csv", "w")
-    file.write("Students Scores \n")
-    file.close()
-    
-    file = open("score_sheet.csv", "a")
-    file.write(f"{first_name_info}, ")
-    file.write(f"{last_name_info}, ")
-    file.write(f"{str(matric_number_info)}, ")
-    file.write(f"{str(score_info)} \n")
-    file.close()
+       
+    with open("C:\\Users\\Mosope\\Desktop\\Projects\\FORM\\score_sheet.csv","a",newline="\n") as File:
+        writer = csv.writer(File)
+        writer.writerow([first_name_info, last_name_info, matric_number_info, score_info])
+    File.close()          
     print(f"{str(matric_number_info)} has been recorded successfully")
-    
+   
     firstname_entry.delete(0, END)
     lastname_entry.delete(0, END)
     matric_number_entry.delete(0, END)
     score_entry.delete(0, END)
-    
+
 
 screen = Tk()
 screen.geometry("1000x1000")
@@ -57,8 +62,9 @@ matric_number_entry.place(x = 10, y = 220)
 score_entry = Entry(textvariable = score)
 score_entry.place(x = 10, y = 290)
 
-submit = Button(screen, text = "Submit", width = "15", height = "1", command = saveInfo)
+submit = Button(screen, text = "Submit", width = "15", height = "1", command = lambda: [writeHeader(), appendInfo()])
 submit.place(x = 10, y = 330)
+
 
 
 
