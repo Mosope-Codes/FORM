@@ -27,6 +27,12 @@ def appendInfo():
     matric_number_info = matric_number.get()
     score_info = score.get()
     
+    person = {
+        'firstName' : first_name_info,
+        'lastName' : last_name_info,
+        'matric': matric_number_info,
+        'scorel': score_info
+    }
     
     score_list.append(score_info)
     
@@ -45,11 +51,30 @@ def appendInfo():
     matric_number_entry.delete(0, END)
     score_entry.delete(0, END)
     
-    return score_list
+    return person
 
-lists = appendInfo()
 def addTOList():
-    print(lists)
+    failedScore = []
+    passedScore = []
+    lists = appendInfo()
+    print(lists['firstName'])
+    # print(max(lists))
+    # print(min(lists))
+    # print(mean(lists))
+    
+    # for score in lists:
+    #     if score < 40:
+            
+    #         failedScore.append(score)
+    #         print(failedScore)
+            
+    #     if score >= 70:
+    #         passedScore.append(score)
+    #         print(passedScore)
+    with open("C:\\Users\\Mosope\\Desktop\\Projects\\FORM\\passed.csv","a",newline="\n") as File:
+        writer = csv.writer(File)
+        writer.writerow([lists["firstName"], lists["lastName"], lists["matric"]])
+    File.close()
 
 
 
