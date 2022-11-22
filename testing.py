@@ -3,22 +3,17 @@ import csv
 from tkinter.filedialog import asksaveasfile
 from statistics import mean
 
-score_list = [11, 44, 66]
+screen = Tk()
+screen.geometry("500x500")
+screen.title("CSC212 Form")
 
-def stats(num):
-    score_list.append(num)
-    mean_score = mean(score_list)
-
+score_list = []
 
 def save_file():
    file = asksaveasfile(initialfile = 'score_sheet.csv',
 defaultextension=".csv",filetypes=[("All Files","*.*"),("Text Documents","*.txt")])
 
-def writeHeader():
-    with open("C:\\Users\\Mosope\\Desktop\\Projects\\FORM\\score_sheet.csv","a",newline="\n") as File:
-        writer = csv.writer(File)
-        writer.writerow(["Firstname", "Lastname", "Matric Number", "Score"])
-    File.close()
+
 
 def appendInfo():
             
@@ -26,15 +21,18 @@ def appendInfo():
     last_name_info = lastname.get()
     matric_number_info = matric_number.get()
     score_info = score.get()
+    score_list.append(score_info)
     
     person = {
         'firstName' : first_name_info,
         'lastName' : last_name_info,
         'matric': matric_number_info,
-        'scorel': score_info
+        'score': score_info
     }
-    
-    score_list.append(score_info)
+       
+    score_max = max(score_list)
+    score_min = min(score_list)
+    score_mean = mean(score_list)
     
     print(f"Firstname: {first_name_info} \nLastname: {last_name_info} \nMatric Number: {matric_number_info} \nScore: {score_info} \n ")
        
@@ -44,43 +42,52 @@ def appendInfo():
     File.close()          
     print(f"{str(matric_number_info)} has been recorded successfully")
     
+    with open("C:\\Users\\Mosope\\Desktop\\Projects\\FORM\\eda.csv","w",newline="\n") as File:
+        writer = csv.writer(File)
+        writer.writerow(["Max Score", "Min Score", "Mean Score"])
+        writer.writerow([score_max, score_min, score_mean])
+    File.close()
     
-   
-    firstname_entry.delete(0, END)
-    lastname_entry.delete(0, END)
-    matric_number_entry.delete(0, END)
-    score_entry.delete(0, END)
+    
+    # firstname_entry.delete(0, END)
+    # lastname_entry.delete(0, END)
+    # matric_number_entry.delete(0, END)
+    # score_entry.delete(0, END)
+    
+    max_label = Label(text = f"Max:  {score_max}")
+    max_label.place(x = 10, y = 400)
+    min_label = Label(text = f"Min:  {score_min}")
+    min_label.place(x = 10, y = 420)
+    mean_label = Label(text = f"Mean:  {score_mean}")
+    mean_label.place(x = 10, y = 440)
     
     return person
 
-def addTOList():
-    failedScore = []
-    passedScore = []
-    lists = appendInfo()
-    print(lists['firstName'])
-    # print(max(lists))
-    # print(min(lists))
-    # print(mean(lists))
+
+
+def stats():
     
-    # for score in lists:
-    #     if score < 40:
-            
-    #         failedScore.append(score)
-    #         print(failedScore)
-            
-    #     if score >= 70:
-    #         passedScore.append(score)
-    #         print(passedScore)
-    with open("C:\\Users\\Mosope\\Desktop\\Projects\\FORM\\passed.csv","a",newline="\n") as File:
-        writer = csv.writer(File)
-        writer.writerow([lists["firstName"], lists["lastName"], lists["matric"]])
-    File.close()
+    lists = appendInfo()
+    if lists["score"] < 40:   
+        with open("C:\\Users\\Mosope\\Desktop\\Projects\\FORM\\failed.csv","a",newline="\n") as File:
+            writer = csv.writer(File)
+            writer.writerow([lists["firstName"], lists["lastName"], lists["matric"]])
+        File.close()
+        
+    if lists["score"] >= 70: 
+        with open("C:\\Users\\Mosope\\Desktop\\Projects\\FORM\\passed.csv","a",newline="\n") as File:
+            writer = csv.writer(File)
+            writer.writerow([lists["firstName"], lists["lastName"], lists["matric"]])
+        File.close()
 
 
 
-screen = Tk()
-screen.geometry("1000x1000")
-screen.title("CSC212 Form")
+
+
+
+
+
+
 
 heading = Label(text="CSC Form", bg="grey", width="1000", height="2")
 heading.pack()
@@ -93,6 +100,8 @@ matric_number_label = Label(text = "Matric Number")
 matric_number_label.place(x = 10, y = 190)
 score_label = Label(text = "Score")
 score_label.place(x = 10, y = 260)
+
+
 
 firstname = StringVar()
 lastname = StringVar()
@@ -108,11 +117,11 @@ matric_number_entry.place(x = 10, y = 220)
 score_entry = Entry(textvariable = score)
 score_entry.place(x = 10, y = 290)
 
-submit = Button(screen, text = "Submit", width = "15", height = "1", command = lambda: [appendInfo()])
+submit = Button(screen, text = "Submit", width = "15", height = "1", command = lambda: [appendInfo(), stats()])
 submit.place(x = 10, y = 330)
 
-submit = Button(screen, text = "Mean", width = "15", height = "1", command = addTOList)
-submit.place(x = 10, y = 360)
+submit = Button(screen, text = "Analysis", width = "15", height = "1", command = stats)
+submit.place(x = 200, y = 330)
 
 
 
