@@ -1,6 +1,6 @@
 from tkinter import *
 import csv
-from tkinter.filedialog import asksaveasfile
+# from tkinter.filedialog import asksaveasfile
 from statistics import mean
 import pandas as pd
 
@@ -10,54 +10,50 @@ screen.title("CSC212 Form")
 
 score_list = []
 
-def save_file():
-   file = asksaveasfile(initialfile = 'score_sheet.csv',
-defaultextension=".csv",filetypes=[("All Files","*.*"),("Text Documents","*.txt")])
+# def save_file():
+#    file = asksaveasfile(initialfile = 'score_sheet.csv',
+# defaultextension=".csv",filetypes=[("All Files","*.*"),("Text Documents","*.txt")])
 
 def eda():
     calc = pd.read_csv('score_sheet.csv')
-    maxi = calc.Score.max()
-    avg = calc.Score.mean()
-    mini = calc.Score.min()
+    maximum_score = calc.Score.max()
+    average = calc.Score.mean()
+    minimum_score = calc.Score.min()
     
     with open("C:\\Users\\Mosope\\Desktop\\Projects\\FORM\\eda.csv","w",newline="\n") as File:
         writer = csv.writer(File)
         writer.writerow(["Max Score", "Min Score", "Mean Score"])
-        writer.writerow([maxi, mini, avg])
+        writer.writerow([maximum_score, minimum_score, average])
     File.close()
     
     
-
-
-def appendInfo():
-            
+def get_info(): 
     first_name_info = firstname.get()
     last_name_info = lastname.get()
     matric_number_info = matric_number.get()
     score_info = score.get()
     score_list.append(score_info)
-    
+
     person = {
         'firstName' : first_name_info,
         'lastName' : last_name_info,
         'matric': matric_number_info,
         'score': score_info
     }
-    '''   
-    score_max = max(score_list)
-    score_min = min(score_list)
-    score_mean = mean(score_list)
     
-    print(f"Firstname: {first_name_info} \nLastname: {last_name_info} \nMatric Number: {matric_number_info} \nScore: {score_info} \n ")
-    '''
-       
+    return person 
+
+def student_info():
+    student_detail = get_info()
+    print(f"Firstname: {student_detail['firstName']} \nLastname: {student_detail['lastName']} \nMatric Number: {student_detail['matric']} \nScore: {student_detail['score']} \n ")
     
     with open("C:\\Users\\Mosope\\Desktop\\Projects\\FORM\\score_sheet.csv","a",newline="\n") as File:
         writer = csv.writer(File)
-        writer.writerow([first_name_info, last_name_info, matric_number_info, score_info])
+        writer.writerow([student_detail['firstName'], student_detail['lastName'], student_detail['matric'], student_detail['score']])
     File.close()
-          
-    print(f"{str(matric_number_info)} has been recorded successfully")
+           
+    print(f"{str(student_detail['matric'])} has been recorded successfully")
+    
     eda()
 
     
@@ -85,13 +81,12 @@ def appendInfo():
     # mean_label = Label(text = f"Mean:  {score_mean}")
     # mean_label.place(x = 10, y = 440)
     
-    return person
 
 
 
 def stats():
     
-    lists = appendInfo()
+    lists = get_info()
     
     if lists["score"] < 40:   
         with open("C:\\Users\\Mosope\\Desktop\\Projects\\FORM\\failed.csv","a",newline="\n") as File:
@@ -142,7 +137,7 @@ matric_number_entry.place(x = 10, y = 220)
 score_entry = Entry(textvariable = score)
 score_entry.place(x = 10, y = 290)
 
-submit = Button(screen, text = "Submit", width = "15", height = "1", command = lambda: [appendInfo(), eda()])
+submit = Button(screen, text = "Submit", width = "15", height = "1", command = lambda: [student_info(), eda(), stats()])
 submit.place(x = 10, y = 330)
 
 submit = Button(screen, text = "Analysis", width = "15", height = "1", command = stats)
